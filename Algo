@@ -1,0 +1,225 @@
+//***************************************************************
+//Menu 
+//***************************************************************
+
+
+//Fonction qui demande de choisir un programme a lancé
+
+FONCTION choix (VAR nChoix : ENTIER)
+	DEBUT
+		ECRIRE "Bienvenue dans un programme de convertion de nombre decimal et de chiffres romains.\n\nChoissisez la convertion que vous voulez lancer :\n    1. Decimal vers Romain\n    2. Romains vers Decimal\n    0. Quitter\n\n"
+		REPETER
+			LIRE nChoix
+			SI(nChoix<0 OU nChoix>2)
+				ECRIRE "Choix non valide !\n"
+			FIN SI
+		JUSQU'A(nChoix<0 OU nChoix>2)
+		choix <- nChoix
+	FIN FONCTION
+
+
+//Procedure qui lance le programme choisie
+
+PROCEDURE lancement (VAR nChoix : ENTIER)
+	DEBUT
+		SI(nChoix==1)
+			conversionDR()
+		SINON
+			SI(nChoix==2)
+				conversionRD()
+			FIN SI
+		FIN SI
+	FIN PROCEDURE
+
+
+//*************************************************************** 
+//Convertion Décimal vers Romain 
+//***************************************************************
+
+
+//Procedure qui lance la conversion décimale vers romain
+
+PROCEDURE conversionDR()
+	VAR 
+		nX : ENTIER
+		nMultiple : ENTIER
+		nN : ENTIER
+		nZ : ENTIER
+		cTableR : TABLE CHAR
+
+	DEBUT
+		CLEAR
+		cTableR <- {'M','D','C','L','X','V','I'}
+		znX <- initDecimal()
+		SI(nX>=1000)
+			nZ <- 4
+			nMultiple <- 1000
+			nN <- -2
+		SINON
+			SI(nX>=100)
+				nZ <- 3
+				nMultiple <- 100
+				nN <- 0
+			SINON
+				SI(nX>=10)
+					nZ <- 2
+					nMultiple <- 10
+					nN <- 2
+				SINON
+					nZ <- 1
+					nMultiple <- 1
+					nN <- 4
+				FIN SI
+			FIN SI
+		FIN SI
+		ECRIRE "\nLe chiffre", nX ,"en decimal vaut "
+		REPETE
+			nX <- finalConvDR(nX, nMultiple, nN, cTableR)
+			nMultiple <- nMultiple/10
+			nN <- nN+2
+			nZ <- nZ-1
+		JUSQU'A(nZ>0)
+		ECRIRE " en chiffre romain.\n\nPour retourner au menu principale, "
+		PAUSE
+		CLEAR
+	FIN PROCEDURE
+
+
+//Fonction demandant un chiffre décimale
+
+FONCTION initDecimal()
+	VAR 
+		nX : ENTIER
+	DEBUT
+		ECRIRE "Bienvenue dans le programme de convertion de decimal en romain !\n\n"
+		REPETE
+			ECRIRE "Veuillez rentrer un chiffre entre 1 et 3999 : "
+			LIRE nX
+		JUSQU'A(nX<=0 OU nX>=4000)
+		initDecimal <- nX
+	FIN FONCTION
+
+
+//Fonction réalisant la conversion d'un nombre décimal à un chiffre romain
+
+FONCTION finalConvDR(VAR nX : ENTIER, VAR nMultiple : ENTIER, VAR nN : ENTIER, VAR cTableR : TABLE CHAR)
+	VAR 
+		nTemp : ENTIER
+		nI : ENTIER
+	DEBUT
+		SI(nX>=(9*nMultiple))
+			nX <- nX - (9*nMultiple)
+			ECRIRE cTableR[2+nN], cTableR[0+nN]
+		SINON
+			SI(nX>=(5*nMultiple))
+				nX <- nX - (5*nMultiple)
+				ECRIRE cTableR[1+nN]
+			SINON
+				SI(nX>=(4*nMultiple))
+					nX <- nX - (4*nMultiple)
+					ECRIRE cTableR[2+nN], cTableR[1+nN]
+				FIN SI
+			FIN SI
+		FIN SI
+		SI(nX>=(1*nMultiple))
+			nTemp <- nX/(1*nMultiple)
+			nX <- nX-((1*nMultiple)*nTemp)
+			POUR nI DE 0 A nTemp FAIRE
+				ECIRE cTableR[2+nN]
+			FIN POUR
+		FIN SI
+		finalConvDR <- nX
+	FIN FONCTION
+
+
+//*************************************************************** 
+//Convertion Romain vers Decimal 
+//***************************************************************
+
+
+//Procedure qui lance la conversion romain vers décimale
+
+PROCEDURE conversionRD()
+	VAR
+		nDecimal : ENTIER
+		cTableR : CHAR TABLE[15]
+	DEBUT
+		CLEAR
+		nDecimal <- -5
+		ECRIRE "Bienvenue dans le programme de convertion de romain en decimal !\n\n"
+		ECRIRE "Veuillez rentrer un chiffre correct en romain : "
+		LIRE cTableR
+		nDecimal <- finalConvRD(cTableR)
+		SI(nDecimal<0)
+			ECRIRE "\nVous avez ecrit un caractere non valide !\n\nPour retourner au menu principale, "
+		SINON
+			ECRIRE "\nLe chiffre ", cTableR, " en romain vaut ", nDecimal, " en decimal.\n\nPour retourner au menu principale, "
+		FIN SI
+		PAUSE
+		CLEAR
+	FIN PROCEDURE
+
+
+//Fonction réalisant la conversion d'un chiffre romain à un chiffre décimal
+
+FONCTION finalConvRD(VAR cTableR : TABLE CHAR)
+	VAR
+		nDecimal : ENTIER
+		nI : ENTIER
+	DEBUT
+		nDecimal <- 0
+		POUR nI DE 0 A taille(cTableR) FAIRE
+			SI(romain(cTable(nI))==-5)
+				nDecimal <- nDecimal - 10000
+			SINON
+				SI(romain(cTable(nI))>=romain(cTable(nI+1)))
+					nDecimal <- nDecimal + romain(cTable(nI))
+				SINON
+					nDecimal <- nDecimal - romain(cTable(nI))
+				FIN SI
+			FIN SI
+		FIN POUR
+		nDecimal <- nDecimal - romain(cTable(nI))
+		finalConvRD <- nDecimal
+	FIN FONCTION
+
+
+//Fonction qui retourne la valeur décimale d'un caractère romain
+
+FONCTION romain(VAR cValeur : CARACTERE)
+	DEBUT
+		CAS(cValeur) PARMI
+			CAS 'M':
+				romain <- 1000
+			CAS 'D':
+				romain <- 500
+			CAS 'C':
+				romain <- 100
+			CAS 'L':
+				romain <- 50
+			CAS 'X':
+				romain <- 10
+			CAS 'V':
+				romain <- 5
+			CAS 'I':
+				romain <- 1
+			CAS '\0':
+				romain <- 0
+			DEFAUT:
+				romain <- -5
+		FIN CAS PARMI
+
+
+//Fonction principale
+
+FONCTION main()
+	VAR 
+		nChoix : ENTIER
+	DEBUT
+		nChoix <- 42
+		REPETE
+			nChoix <- choix(nChoix)
+			lancement(nChoix)
+		JUSQU'A(nChoix=!0)
+		ECRIRE "\nAurevoir\n"
+		main <- 0

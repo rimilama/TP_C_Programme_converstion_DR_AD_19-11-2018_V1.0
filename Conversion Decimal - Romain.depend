@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1542611870 source:c:\users\antoine\documents\ludus\f2\1. c\2. projet codeblocks\2. programme noté\2. programme convertion chiffre dec_romain\conversion decimal - romain\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
